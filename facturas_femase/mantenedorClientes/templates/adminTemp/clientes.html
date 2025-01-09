@@ -1,0 +1,154 @@
+{% extends '../base.html' %} {% block title %} Mantenedor Clientes 
+{% endblock %} {% block content %}
+
+<nav class="navbar navbar-expand-lg bg-primary h6" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'dashboard' %}">FEMASE</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'dashboard' %}">Inicio</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Mantenedores
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'clientes' %}">Clientes</a></li>
+            <li><a class="dropdown-item" href="#">Usuarios</a></li>
+          </ul>
+        </li>
+      </ul>
+      <button class="btn btn-danger text-white"><a href="{% url 'logout' %}">Cerrar sesion</a></button>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid my-4">
+  <div class="card p-4">
+    <div class="display-6">Clientes</div>
+    <table class="table mt-4 table-hover">
+      <thead>
+        <tr>
+          <th scope="col">RUT</th>
+          <th scope="col">Nombre cliente</th>
+          <th scope="col">Nombre Contacto 1</th>
+          <th scope="col">Nombre Contacto 2</th>
+          <th scope="col">Cargo contacto 1</th>
+          <th scope="col">Cargo contacto 2</th>
+          <th scope="col">Numero 1</th>
+          <th scope="col">Numero 2</th>
+          <th scope="col">Correo 1</th>
+          <th scope="col">Correo 2</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cliente in clientes %}
+        <tr>
+          <th scope="row">{{ cliente.rutCliente }}</th>
+          <td>{{ cliente.nombreCliente }}</td>
+          <td>{{ cliente.nombreContacto1 }}</td>
+          <td>{{ cliente.nombreContacto2 }}</td>
+          <td>{{ cliente.cargoContacto1 }}</td>
+          <td>{{ cliente.cargoContacto2 }}</td>
+          <td>{{ cliente.numeroContacto1 }}</td>
+          <td>{{ cliente.numeroContacto2 }}</td>
+          <td>{{ cliente.correoContacto1}}</td>
+          <td>{{ cliente.correoContacto2}}</td>
+          <td>
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary">
+                <a href="{% url 'actualizarCliente' cliente.id %}">
+                  <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e8eaed"
+                >
+                  <path
+                    d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+                  />
+                </svg>
+                </a>
+              </button>
+              <button class="btn btn-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bottom-0 translate-middle end-0 position-absolute">
+    <button
+      data-bs-toggle="modal"
+      data-bs-target="#exampleModal"
+      class="btn btn-primary btn-lg"
+    >
+      +
+    </button>
+  </div>
+
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">
+            Agregar cliente
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex flex-column gap-4">
+            <form method="post">
+              {% csrf_token %} 
+              <div class="row row-cols-2">
+                {% for field in form %}
+                <div class="col">
+                    {{ field.errors }}
+                    {{ field.label_tag }}: {{ field }}
+                </div>
+                {% endfor %}
+              </div>
+              <button type="submit" class="btn display-6 btn-primary mt-4">Guardar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
