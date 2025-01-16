@@ -11,3 +11,18 @@ class Cliente(models.Model):
     numeroContacto2 = models.IntegerField(null=True)
     correoContacto1 = models.EmailField()
     correoContacto2 = models.EmailField(null=True)
+
+    def __str__(self):
+        return self.nombreCliente
+
+
+estados = (("PENDIENTE", "PENDIENTE"), ("LISTO", "LISTO"))
+
+class Factura(models.Model):
+    descripcion = models.CharField(max_length=60)
+    codFactura = models.IntegerField()
+    monto = models.IntegerField()
+    fechaInicio = models.DateField()
+    fechaFin = models.DateField()
+    estado = models.CharField(max_length=20, choices=estados)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)

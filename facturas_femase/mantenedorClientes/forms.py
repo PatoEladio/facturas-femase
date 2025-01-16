@@ -1,6 +1,6 @@
 from django import forms
-from django.forms import TextInput
-from .models import Cliente
+from django.forms import TextInput, DateInput
+from .models import Cliente, Factura
 
 class AddClienteForm(forms.ModelForm):
     class Meta:
@@ -25,6 +25,32 @@ class AddClienteForm(forms.ModelForm):
         self.fields['cargoContacto2'].required = False
         self.fields['numeroContacto2'].required = False
         self.fields['correoContacto2'].required = False
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control mt-2'
+            field.widget.attrs['autocomplete'] = 'off'
+
+
+class AddFacturaForm(forms.ModelForm):
+    class Meta:
+        model = Factura
+        fields = '__all__'
+        widgets = {
+            'fechaInicio': forms.DateInput(
+            format=('%Y-%m-%d'),
+            attrs={'class': 'form-control', 
+                'placeholder': 'Select a date',
+                'type': 'date'
+                }),
+            'fechaFin': forms.DateInput(
+            format=('%Y-%m-%d'),
+            attrs={'class': 'form-control', 
+                'placeholder': 'Select a date',
+                'type': 'date'
+                })
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(AddFacturaForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control mt-2'
             field.widget.attrs['autocomplete'] = 'off'
