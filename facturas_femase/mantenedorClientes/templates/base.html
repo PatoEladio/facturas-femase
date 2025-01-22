@@ -9,10 +9,15 @@
       crossorigin="anonymous"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        background-color: #F8F8F8;
+      }
+    </style>
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg bg-primary h6" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg bg-primary py-3 text-white" data-bs-theme="dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'facturas' %}">FEMASE</a>
         <button
@@ -49,10 +54,26 @@
               </ul>
             </li>
           </ul>
-          <button class="btn btn-danger text-white">Cerrar sesión</button>
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+            Cerrar sesión
+          </button>
+          <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Estas seguro de cerrar sesión?</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
+                    <button class="btn btn-danger"><a class="text-decoration-none text-white" href="{% url 'logout' %}">Cerrar sesión</a></button>
+                </div>
+              </div>
+            </div>
         </div>
       </div>
     </nav>
+
     {% block content %}{% endblock %}
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

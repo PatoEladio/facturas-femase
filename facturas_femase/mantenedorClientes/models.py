@@ -1,7 +1,7 @@
 from django.db import models
 
 class Cliente(models.Model):
-    rutCliente = models.CharField(max_length=12)
+    rutCliente = models.CharField(max_length=12, unique=True)
     nombreCliente = models.CharField(max_length=40)
     nombreContacto1 = models.CharField(max_length=40)
     nombreContacto2 = models.CharField(max_length=40, null=True)
@@ -20,7 +20,7 @@ estados = (("PENDIENTE", "PENDIENTE"), ("LISTO", "LISTO"))
 
 class Factura(models.Model):
     descripcion = models.CharField(max_length=60)
-    codFactura = models.IntegerField()
+    codFactura = models.IntegerField(unique=True)
     monto = models.IntegerField()
     fechaInicio = models.DateField()
     fechaFin = models.DateField()
