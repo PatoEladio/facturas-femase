@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Cliente(models.Model):
     rutCliente = models.CharField(max_length=12, unique=True)
     nombreCliente = models.CharField(max_length=40)
@@ -17,6 +18,7 @@ class Cliente(models.Model):
 
 
 estados = (("PENDIENTE", "PENDIENTE"), ("LISTO", "LISTO"))
+
 
 class Factura(models.Model):
     descripcion = models.CharField(max_length=60)

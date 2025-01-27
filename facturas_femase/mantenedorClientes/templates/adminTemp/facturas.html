@@ -1,7 +1,5 @@
-{% extends '../base.html' %} {% block title %} Dashboard {% endblock %} 
-{% block content %} 
-
-{% if success %}
+{% extends '../base.html' %} {% block title %} Dashboard {% endblock %}
+{% block content %} {% if success %}
 <div class="container mt-4 text-center">
   <div class="alert alert-success alert-dismissible fade show" role="alert">
     Factura agregada correctamente!
@@ -13,9 +11,7 @@
     ></button>
   </div>
 </div>
-{% endif %} 
-
-{% if error %}
+{% endif %} {% if error %}
 <div class="container mt-4 text-center">
   <div class="alert alert-danger alert-dismissible fade show" role="alert">
     El registro ya existe
@@ -31,6 +27,42 @@
 
 <div class="container-fluid my-4">
   <div class="card p-4">
+    <div class="display-6">Filtros</div>
+    <hr class="my-4" />
+
+    <form>
+      <div class="row">
+        <div class="col d-flex flex-column gap-2">
+          <label>Cliente</label>
+          <select class="form-control">
+            <option>-------------------------</option>
+            {% for cliente in clientes %}
+            <option value="{{cliente.id}}">{{cliente.nombreCliente}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col d-flex flex-column gap-2">
+          <label>Estado</label>
+          <select class="form-control">
+            <option>-------------------------</option>
+            <option>PENDIENTE</option>
+            <option>LISTO</option>
+          </select>
+        </div>
+        <div class="col d-flex flex-column gap-2">
+          <label>Fecha inicio</label>
+          <input class="form-control" type="date" />
+        </div>
+        <div class="col d-flex flex-column gap-2">
+          <label>Fecha fin</label>
+          <input class="form-control" type="date" />
+        </div>
+      </div>
+      <button class="mt-4 btn btn-primary">Buscar</button>
+    </form>
+  </div>
+
+  <div class="card p-4 mt-4">
     <div class="d-flex">
       <div class="display-6 flex-fill">Facturas</div>
       <button
@@ -64,9 +96,49 @@
           <td>${{ factura.monto }}</td>
           <td>{{ factura.fechaInicio }}</td>
           <td>{{ factura.fechaFin }}</td>
-          <td>{{ factura.estado }}</td>
+          <td>
+            {% if factura.estado == "LISTO" %}
+            <p class="bg-success py-1 text-white rounded">{{ factura.estado }}</p>
+            {% else %}
+            <p class="bg-danger py-1 text-white rounded">{{ factura.estado }}</p>
+            {% endif %}
+          </td>
           <td>
             <div class="d-flex gap-2 justify-content-center">
+              {% if factura.estado == "LISTO" %}
+              <button class="btn btn-success">
+                <a href="{% url 'actualizarFactura' factura.id %}">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e8eaed"
+                  >
+                    <path
+                      d="M280-240q-100 0-170-70T40-480q0-100 70-170t170-70h400q100 0 170 70t70 170q0 100-70 170t-170 70H280Zm0-80h400q66 0 113-47t47-113q0-66-47-113t-113-47H280q-66 0-113 47t-47 113q0 66 47 113t113 47Zm400-40q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM480-480Z"
+                    />
+                  </svg>
+                </a>
+              </button>
+              {% endif %} {% if factura.estado == "PENDIENTE" %}
+              <button class="btn btn-danger">
+                <a href="{% url 'actualizarFactura' factura.id %}">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                    fill="#e8eaed"
+                  >
+                    <path
+                      d="M280-240q-100 0-170-70T40-480q0-100 70-170t170-70h400q100 0 170 70t70 170q0 100-70 170t-170 70H280Zm0-80h400q66 0 113-47t47-113q0-66-47-113t-113-47H280q-66 0-113 47t-47 113q0 66 47 113t113 47Zm0-40q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm200-120Z"
+                    />
+                  </svg>
+                </a>
+              </button>
+              {% endif %}
+
               <button class="btn btn-primary">
                 <a href="{% url 'actualizarFactura' factura.id %}">
                   <svg
