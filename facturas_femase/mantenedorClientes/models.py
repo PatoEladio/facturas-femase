@@ -28,3 +28,8 @@ class Factura(models.Model):
     fechaFin = models.DateField()
     estado = models.CharField(max_length=20, choices=estados)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+
+class FacturaImportada(models.Model):
+    numDocumento = models.CharField(max_length=60, primary_key=True)
+    descripcion = models.CharField(max_length=80)
+    abonos = models.CharField(max_length=40)

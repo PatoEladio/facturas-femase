@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} Subir Factura {% endblock %}
+
+{% block content %}
+
+{% if error %}
+<div class="container mt-4 text-center">
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    El registro ya existe
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+</div>
+{% endif %}
+
+<div class="container-fluid mt-4">
+    <div class="card p-4">
+        <div class="display-6">Subir factura</div>
+        <hr>
+        <div class="my-2">
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="save btn btn-primary">Subir</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

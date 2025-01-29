@@ -25,5 +25,7 @@ urlpatterns = [
         views.actualizarCliente,
         name="actualizarCliente",
     ),
+    path("subirfactura/", views.subirFactura, name='subirFactura'),
+    path("cambiarestado/<int:factura_id>", views.cambiarEstadoFactura, name="cambioEstado"),
     path("logout/", views.signout, name="logout"),
 ]

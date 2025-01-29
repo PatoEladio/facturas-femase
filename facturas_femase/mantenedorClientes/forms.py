@@ -58,3 +58,13 @@ class AddFacturaForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control mt-2"
             field.widget.attrs["autocomplete"] = "off"
+
+
+class UploadFacturaForm(forms.Form):
+    file = forms.FileField()
+
+    def __init__(self, *args, **kwargs):
+        super(UploadFacturaForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs["class"] = "form-control mt-2"
+            field.widget.attrs["autocomplete"] = "off"

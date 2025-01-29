@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 
-from .forms import AddClienteForm, AddFacturaForm
-from .models import Cliente, Factura
+from .forms import AddClienteForm, AddFacturaForm, UploadFacturaForm
+from .models import Cliente, Factura, FacturaImportada
+
+import pandas as pd
 
 
 def login_view(request):
@@ -54,6 +57,46 @@ def facturas(request):
 
 
 @login_required(login_url="/")
+def cambiarEstadoFactura(request, factura_id):
+    if request.method == "POST":
+        factura = get_object_or_404(Factura, pk=factura_id)
+        if factura.estado == "LISTO":
+            factura.estado = "PENDIENTE"
+        elif factura.estado == "PENDIENTE":
+            factura.estado = "LISTO"
+
+        factura.save()
+        return redirect("facturas")
+
+
+@login_required(login_url="/")
+def subirFactura(request):
+    if request.method == "GET":
+        form = UploadFacturaForm()
+        return render(request, "adminTemp/subirFactura.html", {"form": form})
+    else:
+        try:
+            form = UploadFacturaForm(request.POST, request.FILES)
+            if form.is_valid():
+                dataframe = pd.read_excel(request.FILES["file"])
+                df = dataframe.drop("Cargos", axis=1)
+                df = df.dropna()
+                for index, dato in df.iterrows():
+                    FacturaImportada.objects.bulk_create(
+                        [
+                            FacturaImportada(
+                                dato["N° Doc."], dato["Descripción"], dato["Abonos"]
+                            )
+                        ]
+                    )
+                return redirect("facturas")
+        except IntegrityError:
+            return render(
+                request, "adminTemp/subirFactura.html", {"form": form, "error": True}
+            )
+
+
+@login_required(login_url="/")
 def eliminarFactura(request, factura_id):
     factura = get_object_or_404(Factura, pk=factura_id)
     if request.method == "POST":
@@ -76,6 +119,11 @@ def actualizarFactura(request, factura_id):
         form = AddFacturaForm(request.POST, instance=factura)
         form.save()
         return redirect("facturas")
+
+
+@login_required(login_url="/")
+def filtrarFacturas(request):
+    pass
 
 
 @login_required(login_url="/")
