@@ -7,6 +7,7 @@ from .forms import AddClienteForm, AddFacturaForm, UploadFacturaForm
 from .models import Cliente, Factura, FacturaImportada
 
 import pandas as pd
+import numpy as np
 
 
 def login_view(request):
@@ -79,6 +80,7 @@ def subirFactura(request):
             form = UploadFacturaForm(request.POST, request.FILES)
             if form.is_valid():
                 dataframe = pd.read_excel(request.FILES["file"])
+                print(dataframe)
                 df = dataframe.drop("Cargos", axis=1)
                 df = df.dropna()
                 for index, dato in df.iterrows():
@@ -89,11 +91,27 @@ def subirFactura(request):
                             )
                         ]
                     )
-                return redirect("facturas")
+                return redirect("importadas")
         except IntegrityError:
             return render(
                 request, "adminTemp/subirFactura.html", {"form": form, "error": True}
             )
+
+
+@login_required(login_url="/")
+def facturasImportadas(request):
+    importadas = FacturaImportada.objects.values().all()
+    facturas = Factura.objects.values().all()
+    
+    data = [{"importadas": importadas, "filtro": facturas}]
+
+    return render(request, "adminTemp/facturaImportada.html", {"datos": data})
+
+@login_required(login_url="/")
+def aprobarRechazarFactura(request, abono):
+    factura = Factura.objects.filter(monto=abono).values()
+    print(factura)
+    return render(request, 'adminTemp/aprobarFacturas.html', {'factura': factura})
 
 
 @login_required(login_url="/")
@@ -119,11 +137,6 @@ def actualizarFactura(request, factura_id):
         form = AddFacturaForm(request.POST, instance=factura)
         form.save()
         return redirect("facturas")
-
-
-@login_required(login_url="/")
-def filtrarFacturas(request):
-    pass
 
 
 @login_required(login_url="/")

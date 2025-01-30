@@ -1,0 +1,40 @@
+{% extends '../base.html' %} {% block title %} Facturas importadas {% endblock %}
+{% block content %}
+<div class="container-fluid my-4">
+    <div class="card p-4 mt-4">
+        <div class="d-flex">
+            <div class="display-6 flex-fill">Importadas</div>
+        </div>
+        <hr class="my-4" />
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th scope="col">Numero documento</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Monto</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for factura in datos %}
+                {% for importada in factura.importadas %}
+                <tr>
+                    <th scope="row">{{ importada.numDocumento }}</th>
+                    <td>{{ importada.descripcion }}</td>
+                    <td>${{ importada.abonos }}</td>
+                    <td>
+                        {% for filtro in factura.filtro %}
+                        {% if filtro.monto == importada.abonos %}
+                        <a href="{% url 'aprobarRechazar' importada.abonos %}"
+                            class="btn btn-outline-primary btn-sm">Ver coincidencias</a>
+                        {% endif%}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
