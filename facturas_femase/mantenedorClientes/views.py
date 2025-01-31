@@ -113,19 +113,19 @@ def facturasImportadas(request):
     for factura in facturas:
         listadoMontos.append(factura['monto'])
 
-    for montos in listadoMontos:
-        results = next((abonos for abonos in listadoAbonos if abonos['abonos'] == montos), None)
-        if results:
-            results.update({"coincide": "si"})
-        else:
-            pass
-        
+    res = [resultado for resultado in listadoAbonos if resultado['abonos'] in listadoMontos]
+
+    for item in res:
+        item.update({"coincide": "si"})
+
     return render(request, "adminTemp/facturaImportada.html", {'importadas': listadoAbonos})
 
 @login_required(login_url="/")
-def aprobarRechazarFactura(request, abono):
+def aprobarRechazarFactura(request, abono, numDocumento):
     factura = Factura.objects.filter(monto=abono, estado="PENDIENTE").values()
-    return render(request, 'adminTemp/aprobarFacturas.html', {'factura': factura})
+    importada = FacturaImportada.objects.filter(numDocumento=numDocumento).values().all()
+    print(importada)
+    return render(request, 'adminTemp/aprobarFacturas.html', {'factura': factura, 'importadas': importada})
 
 
 @login_required(login_url="/")

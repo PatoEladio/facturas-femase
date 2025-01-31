@@ -28,6 +28,6 @@ urlpatterns = [
     path("subirfactura/", views.subirFactura, name='subirFactura'),
     path("importadas", views.facturasImportadas, name="importadas"),
     path("cambiarestado/<int:factura_id>", views.cambiarEstadoFactura, name="cambioEstado"),
-    path('estadofactura/<int:abono>', views.aprobarRechazarFactura, name="aprobarRechazar"),
+    path('estadofactura/<int:abono>/<int:numDocumento>', views.aprobarRechazarFactura, name="aprobarRechazar"),
     path("logout/", views.signout, name="logout"),
 ]

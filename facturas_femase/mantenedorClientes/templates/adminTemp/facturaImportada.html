@@ -23,7 +23,7 @@
                     <td>${{ importada.abonos }}</td>
                     <td>
                         {% if importada.coincide == "si" %}
-                        <a href="{% url 'aprobarRechazar' importada.abonos %}"
+                        <a href="{% url 'aprobarRechazar' importada.abonos importada.numDocumento %}"
                             class="btn btn-outline-primary btn-sm">Ver coincidencias</a>
                         {% endif%}
                     </td>

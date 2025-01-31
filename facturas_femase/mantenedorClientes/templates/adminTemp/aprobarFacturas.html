@@ -9,11 +9,20 @@
         <div class="d-flex">
             <div class="display-6 flex-fill">Aprobar / Rechazar</div>
         </div>
+        <hr class="mt-4" />
+        <h5 class="mt-2 mb-4">Factura importada</h5>
+        {% for importada in importadas %}
+        <ul class="list-group">
+            <li class="list-group-item">Numero de documento: {{ importada.numDocumento }}</li>
+            <li class="list-group-item">Descripción: {{ importada.descripcion }}</li>
+            <li class="list-group-item">Monto: {{ importada.abonos }}</li>
+            <li class="list-group-item">Fecha: {{ importada.abonos }}</li>
+        </ul>
+        {% endfor %}
         <hr class="mt-4 mb-2" />
         <div class="row">
-
             {% for dato in factura %}
-            <div class="col-6">
+            <div class="col-4">
                 <p class="my-4">Factura encontrada</p>
                 <ul class="list-group">
                     <li class="list-group-item">Descripción: {{ dato.descripcion }}</li>
