@@ -8,6 +8,7 @@ from .models import Cliente, Factura, FacturaImportada
 
 import pandas as pd
 import numpy as np
+import itertools
 
 
 def login_view(request):
@@ -101,16 +102,29 @@ def subirFactura(request):
 @login_required(login_url="/")
 def facturasImportadas(request):
     importadas = FacturaImportada.objects.values().all()
-    facturas = Factura.objects.values().all()
+    facturas = Factura.objects.filter(estado="PENDIENTE").values().all()
     
-    data = [{"importadas": importadas, "filtro": facturas}]
+    listadoAbonos = []
+    listadoMontos = []
 
-    return render(request, "adminTemp/facturaImportada.html", {"datos": data})
+    for importada in importadas:
+        listadoAbonos.append(importada)
+
+    for factura in facturas:
+        listadoMontos.append(factura['monto'])
+
+    for montos in listadoMontos:
+        results = next((abonos for abonos in listadoAbonos if abonos['abonos'] == montos), None)
+        if results:
+            results.update({"coincide": "si"})
+        else:
+            pass
+        
+    return render(request, "adminTemp/facturaImportada.html", {'importadas': listadoAbonos})
 
 @login_required(login_url="/")
 def aprobarRechazarFactura(request, abono):
-    factura = Factura.objects.filter(monto=abono).values()
-    print(factura)
+    factura = Factura.objects.filter(monto=abono, estado="PENDIENTE").values()
     return render(request, 'adminTemp/aprobarFacturas.html', {'factura': factura})
 
 

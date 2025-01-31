@@ -9,25 +9,30 @@
         <div class="d-flex">
             <div class="display-6 flex-fill">Aprobar / Rechazar</div>
         </div>
-        <hr class="my-4" />
-        <p>Factura encontrada</p>
-        <ul class="list-group">
+        <hr class="mt-4 mb-2" />
+        <div class="row">
+
             {% for dato in factura %}
-            <li class="list-group-item">Descripción: {{ dato.descripcion }}</li>
-            <li class="list-group-item">Codigo factura: {{ dato.codFactura }}</li>
-            <li class="list-group-item">Monto: {{ dato.monto }}</li>
-            <li class="list-group-item">Fecha inicio: {{ dato.fechaInicio }}</li>
-            <li class="list-group-item">Fecha fin: {{ dato.fechaFin }}</li>
-            <li class="list-group-item">Estado: {{ dato.estado }}</li>
-            <li class="list-group-item">Cliente: {{ dato.cliente.nombreCliente }}</li>
-            {% endfor %}
-        </ul>
-        <form>
-            <div class="d-flex gap-2 mt-4">
-                <button class="btn btn-outline-success">Aprobar</button>
-                <button class="btn btn-outline-danger">Rechazar</button>
+            <div class="col-6">
+                <p class="my-4">Factura encontrada</p>
+                <ul class="list-group">
+                    <li class="list-group-item">Descripción: {{ dato.descripcion }}</li>
+                    <li class="list-group-item">Codigo factura: {{ dato.codFactura }}</li>
+                    <li class="list-group-item">Monto: {{ dato.monto }}</li>
+                    <li class="list-group-item">Fecha inicio: {{ dato.fechaInicio }}</li>
+                    <li class="list-group-item">Fecha fin: {{ dato.fechaFin }}</li>
+                    <li class="list-group-item">Estado: {{ dato.estado }}</li>
+                    <li class="list-group-item">Cliente: {{ dato.cliente.nombreCliente }}</li>
+                </ul>
+                <form action="{% url 'cambioEstado' dato.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="mt-4">
+                        <button class="btn btn-outline-success">Aprobar</a>
+                    </div>
+                </form>
             </div>
-        </form>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
