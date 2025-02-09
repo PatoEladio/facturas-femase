@@ -29,5 +29,7 @@ urlpatterns = [
     path("importadas", views.facturasImportadas, name="importadas"),
     path("cambiarestado/<int:factura_id>", views.cambiarEstadoFactura, name="cambioEstado"),
     path('estadofactura/<int:abono>/<int:numDocumento>', views.aprobarRechazarFactura, name="aprobarRechazar"),
+    path('servicios', views.servicios, name="servicios"),
+    path('eliminarservicio/<int:servicio_id>', views.eliminarServicio, name='eliminarServicio'),
     path("logout/", views.signout, name="logout"),
 ]

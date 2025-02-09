@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente, Factura
+from .models import Cliente, Factura, Servicio
 
 
 class AddClienteForm(forms.ModelForm):
@@ -65,6 +65,17 @@ class UploadFacturaForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(UploadFacturaForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs["class"] = "form-control mt-2"
+            field.widget.attrs["autocomplete"] = "off"
+
+class AddServicioForm(forms.ModelForm):
+    class Meta:
+        model = Servicio
+        fields = "__all__"
+    
+    def __init__(self, *args, **kwargs):
+        super(AddServicioForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control mt-2"
             field.widget.attrs["autocomplete"] = "off"

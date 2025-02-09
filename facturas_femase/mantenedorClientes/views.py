@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 
-from .forms import AddClienteForm, AddFacturaForm, UploadFacturaForm
-from .models import Cliente, Factura, FacturaImportada
+from .forms import AddClienteForm, AddFacturaForm, UploadFacturaForm, AddServicioForm
+from .models import Cliente, Factura, FacturaImportada, Servicio
 
 import pandas as pd
 import numpy as np
@@ -103,9 +103,11 @@ def subirFactura(request):
 def facturasImportadas(request):
     importadas = FacturaImportada.objects.values().all()
     facturas = Factura.objects.filter(estado="PENDIENTE").values().all()
+    servicios = Servicio.objects.values().all()
     
     listadoAbonos = []
     listadoMontos = []
+    listadoServiciosPorValor = []
 
     for importada in importadas:
         listadoAbonos.append(importada)
@@ -113,10 +115,23 @@ def facturasImportadas(request):
     for factura in facturas:
         listadoMontos.append(factura['monto'])
 
+    for servicio in servicios:
+        listadoServiciosPorValor.append({"nombreServicio": servicio['nombre'], "valorServicio": servicio['valor']})
+
     res = [resultado for resultado in listadoAbonos if resultado['abonos'] in listadoMontos]
 
     for item in res:
         item.update({"coincide": "si"})
+
+    for servicio in listadoServiciosPorValor:
+        valor = servicio['valorServicio']
+        nombre = servicio['nombreServicio']
+        for abono in listadoAbonos:
+            monto = abono['abonos']
+            if monto == valor:
+                abono.update({"nombreServicio": nombre})
+
+    print(listadoAbonos)
 
     return render(request, "adminTemp/facturaImportada.html", {'importadas': listadoAbonos})
 
@@ -197,3 +212,28 @@ def eliminarCliente(request, cliente_id):
     if request.method == "POST":
         cliente.delete()
         return redirect("clientes")
+
+@login_required(login_url="/")
+def servicios(request):
+    form = AddServicioForm()
+    obtenerServicios = Servicio.objects.all().values()
+    if request.method == "GET":
+        return render(request, "adminTemp/servicios.html", {'form': form, 'servicios': obtenerServicios})
+    else:
+        try:
+            form = AddServicioForm(request.POST)
+            form.save()
+            return redirect("servicios")
+        except:
+            return render(
+                request,
+                "adminTemp/servicios.html",
+                {"form": form, "error": True, 'servicios': obtenerServicios}
+            )
+        
+@login_required(login_url="/")
+def eliminarServicio(request, servicio_id):
+    servicio = get_object_or_404(Servicio, pk=servicio_id)
+    if request.method == "POST":
+        servicio.delete()
+        return redirect("servicios")

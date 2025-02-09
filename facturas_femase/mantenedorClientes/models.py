@@ -33,3 +33,7 @@ class FacturaImportada(models.Model):
     numDocumento = models.CharField(max_length=60, primary_key=True)
     descripcion = models.CharField(max_length=80)
     abonos = models.IntegerField()
+
+class Servicio(models.Model):
+    nombre = models.CharField(max_length=40)
+    valor = models.IntegerField()
