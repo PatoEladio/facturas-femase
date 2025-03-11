@@ -1,9 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.contrib.auth.models import User
 
-from .forms import AddClienteForm, AddFacturaForm, UploadFacturaForm, AddServicioForm
+from .forms import (
+    AddClienteForm,
+    AddFacturaForm,
+    UploadFacturaForm,
+    AddServicioForm,
+    RegistrationForm,
+)
 from .models import Cliente, Factura, FacturaImportada, Servicio
 
 import pandas as pd
@@ -81,7 +88,6 @@ def subirFactura(request):
             form = UploadFacturaForm(request.POST, request.FILES)
             if form.is_valid():
                 dataframe = pd.read_excel(request.FILES["file"])
-                print(dataframe)
                 df = dataframe.drop("Cargos", axis=1)
                 df = df.dropna()
                 for index, dato in df.iterrows():
@@ -104,7 +110,7 @@ def facturasImportadas(request):
     importadas = FacturaImportada.objects.values().all()
     facturas = Factura.objects.filter(estado="PENDIENTE").values().all()
     servicios = Servicio.objects.values().all()
-    
+
     listadoAbonos = []
     listadoMontos = []
     listadoServiciosPorValor = []
@@ -113,34 +119,45 @@ def facturasImportadas(request):
         listadoAbonos.append(importada)
 
     for factura in facturas:
-        listadoMontos.append(factura['monto'])
+        listadoMontos.append(factura["monto"])
 
     for servicio in servicios:
-        listadoServiciosPorValor.append({"nombreServicio": servicio['nombre'], "valorServicio": servicio['valor']})
+        listadoServiciosPorValor.append(
+            {"nombreServicio": servicio["nombre"], "valorServicio": servicio["valor"]}
+        )
 
-    res = [resultado for resultado in listadoAbonos if resultado['abonos'] in listadoMontos]
+    res = [
+        resultado for resultado in listadoAbonos if resultado["abonos"] in listadoMontos
+    ]
 
     for item in res:
         item.update({"coincide": "si"})
 
     for servicio in listadoServiciosPorValor:
-        valor = servicio['valorServicio']
-        nombre = servicio['nombreServicio']
+        valor = servicio["valorServicio"]
+        nombre = servicio["nombreServicio"]
         for abono in listadoAbonos:
-            monto = abono['abonos']
+            monto = abono["abonos"]
             if monto == valor:
                 abono.update({"nombreServicio": nombre})
 
-    print(listadoAbonos)
+    return render(
+        request, "adminTemp/facturaImportada.html", {"importadas": listadoAbonos}
+    )
 
-    return render(request, "adminTemp/facturaImportada.html", {'importadas': listadoAbonos})
 
 @login_required(login_url="/")
 def aprobarRechazarFactura(request, abono, numDocumento):
     factura = Factura.objects.filter(monto=abono, estado="PENDIENTE").values()
-    importada = FacturaImportada.objects.filter(numDocumento=numDocumento).values().all()
-    print(importada)
-    return render(request, 'adminTemp/aprobarFacturas.html', {'factura': factura, 'importadas': importada})
+    importada = (
+        FacturaImportada.objects.filter(numDocumento=numDocumento).values().all()
+    )
+    
+    return render(
+        request,
+        "adminTemp/aprobarFacturas.html",
+        {"factura": factura, "importadas": importada},
+    )
 
 
 @login_required(login_url="/")
@@ -213,12 +230,17 @@ def eliminarCliente(request, cliente_id):
         cliente.delete()
         return redirect("clientes")
 
+
 @login_required(login_url="/")
 def servicios(request):
     form = AddServicioForm()
     obtenerServicios = Servicio.objects.all().values()
     if request.method == "GET":
-        return render(request, "adminTemp/servicios.html", {'form': form, 'servicios': obtenerServicios})
+        return render(
+            request,
+            "adminTemp/servicios.html",
+            {"form": form, "servicios": obtenerServicios},
+        )
     else:
         try:
             form = AddServicioForm(request.POST)
@@ -228,12 +250,52 @@ def servicios(request):
             return render(
                 request,
                 "adminTemp/servicios.html",
-                {"form": form, "error": True, 'servicios': obtenerServicios}
+                {"form": form, "error": True, "servicios": obtenerServicios},
             )
-        
+
+@login_required(login_url="/")
+def actualizarServicio(request, servicio_id):
+    if request.method == "GET":
+        servicio = get_object_or_404(Servicio, pk=servicio_id)
+        form = AddServicioForm(instance=servicio)
+        return render(
+            request,
+            "adminTemp/actualizarServicio.html",
+            {"servicio": servicio, "form": form},
+        )
+    else:
+        servicio = get_object_or_404(Servicio, pk=servicio_id)
+        form = AddServicioForm(request.POST, instance=servicio)
+        form.save()
+        return redirect("servicios")
+
+
 @login_required(login_url="/")
 def eliminarServicio(request, servicio_id):
     servicio = get_object_or_404(Servicio, pk=servicio_id)
     if request.method == "POST":
         servicio.delete()
         return redirect("servicios")
+
+
+@login_required(login_url="/")
+def usuarios(request):
+    obtenerUsuarios = User.objects.values().all()
+    if request.method == "POST":
+        try:
+            form = RegistrationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect("usuarios")
+        except:
+            return render(request, "adminTemp/facturas.html", {"form": form, "error": True, "usuarios": obtenerUsuarios})
+    else:
+        form = RegistrationForm()
+        return render(request, "adminTemp/usuarios.html", {"form": form, "usuarios": obtenerUsuarios})
+
+@login_required(login_url="/")
+def eliminarUsuario(request, usuario_id):
+    usuario = get_object_or_404(User, pk=usuario_id)
+    if request.method == "POST":
+        usuario.delete()
+        return redirect("usuarios")

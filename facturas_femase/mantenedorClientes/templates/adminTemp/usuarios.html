@@ -1,0 +1,105 @@
+{% extends '../base.html' %} {% block title %} Usuarios {% endblock %}
+{% block content %}
+
+<div class="container-fluid my-4">
+  <div class="card p-4 mt-4">
+    <div class="d-flex">
+      <div class="display-6 flex-fill">Usuarios</div>
+      <div class="d-flex gap-2">
+        <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary">
+          Agregar usuario
+        </button>
+      </div>
+    </div>
+    <hr class="my-4" />
+    <table class="table table-bordered text-center">
+      <thead>
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Email</th>  
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+          <th scope="row">{{ usuario.username }}</th>
+          <td>{{ usuario.email }}</td>
+          <td>
+            <div class="d-flex gap-2 justify-content-center">
+              <button class="btn btn-primary">
+                <a href="#">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    fill="#e8eaed">
+                    <path
+                      d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                  </svg>
+                </a>
+              </button>
+              <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                  fill="#e8eaed">
+                  <path
+                    d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                </svg>
+              </button>
+              <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        Seguro que deseas eliminar el usuario
+                      </h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Volver
+                      </button>
+                      <form action="{% url 'eliminarUsuario' usuario.id %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger">Eliminar</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">
+            Agregar usuario
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex flex-column gap-4">
+            <form method="post">
+              {% csrf_token %}
+              <div class="row row-cols-2">
+                {% for field in form %}
+                <div class="col">
+                  {{ field.errors }} {{ field.label_tag }}: {{ field }}
+                </div>
+                {% endfor %}
+              </div>
+              <button type="submit" class="btn display-6 btn-primary mt-4">
+                Guardar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}

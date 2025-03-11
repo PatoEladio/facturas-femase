@@ -30,6 +30,13 @@ urlpatterns = [
     path("cambiarestado/<int:factura_id>", views.cambiarEstadoFactura, name="cambioEstado"),
     path('estadofactura/<int:abono>/<int:numDocumento>', views.aprobarRechazarFactura, name="aprobarRechazar"),
     path('servicios', views.servicios, name="servicios"),
+    path(
+        "actualizarServicio/<int:servicio_id>",
+        views.actualizarServicio,
+        name="actualizarServicio",
+    ),
     path('eliminarservicio/<int:servicio_id>', views.eliminarServicio, name='eliminarServicio'),
+    path('usuarios/', views.usuarios, name="usuarios"),
+    path('eliminarusuario/<int:usuario_id>', views.eliminarUsuario, name='eliminarUsuario'),
     path("logout/", views.signout, name="logout"),
 ]
