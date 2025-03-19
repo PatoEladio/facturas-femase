@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d=sv0f2k^n!b!fuu5di(12^n51*&r5^265%v6!tcr-$6fx+jh$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", '51.79.38.24']
 
@@ -78,14 +78,18 @@ WSGI_APPLICATION = 'facturas_femase.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #         'ENGINE': 'django.db.backends.mysql',
+    #         'NAME': 'facturas',
+    #         'USER': 'facturas_user',
+    #         'PASSWORD': 'Admin_Facturas_2025',
+    #         'HOST': 'localhost',
+    #         'PORT': '3306',
+    #     }
     'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'facturas',
-            'USER': 'facturas_user',
-            'PASSWORD': 'Admin_Facturas_2025',
-            'HOST': 'localhost',
-            'PORT': '3306',
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
+    }
 }
 
 

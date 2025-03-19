@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -11,15 +12,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
-        background-color: #F8F8F8;
+        background-color: #f8f8f8;
       }
     </style>
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg sticky-top bg-primary py-3 text-white" data-bs-theme="dark">
+    <nav
+      class="navbar navbar-expand-lg bg-primary py-3 text-white"
+      data-bs-theme="dark"
+    >
       <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'facturas' %}">FEMASE</a>
+        <a class="navbar-brand" href="{% url 'facturas' %}"
+          ><img src="{% static 'logo.png' %}" style="width: 150px"
+        /></a>
         <button
           class="navbar-toggler"
           type="button"
@@ -34,7 +40,12 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{% url 'facturas' %}">Inicio</a>
+              <a
+                class="nav-link active"
+                aria-current="page"
+                href="{% url 'facturas' %}"
+                >Inicio</a
+              >
             </li>
             <li class="nav-item dropdown">
               <a
@@ -48,37 +59,82 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a class="dropdown-item" href="{% url 'importadas' %}">Facturas importadas</a>
+                  <a class="dropdown-item" href="{% url 'importadas' %}"
+                    >Facturas importadas</a
+                  >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'servicios' %}">Servicios</a>
+                  <a class="dropdown-item" href="{% url 'servicios' %}"
+                    >Servicios</a
+                  >
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'clientes' %}">Clientes</a>
+                  <a class="dropdown-item" href="{% url 'clientes' %}"
+                    >Clientes</a
+                  >
                 </li>
-                <li><a class="dropdown-item" href="{% url 'usuarios' %}">Usuarios</a></li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'usuarios' %}"
+                    >Usuarios</a
+                  >
+                </li>
               </ul>
             </li>
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="{% url 'subirFactura' %}">Subir factura</a>
+              <a
+                class="nav-link"
+                aria-current="page"
+                href="{% url 'subirFactura' %}"
+                >Subir factura</a
+              >
             </li>
           </ul>
-          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+          <button
+            class="btn btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#logoutModal"
+          >
             Cerrar sesión
           </button>
-          <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+          <div
+            class="modal fade"
+            id="logoutModal"
+            tabindex="-1"
+            aria-labelledby="logoutModalLabel"
+            aria-hidden="true"
+          >
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Estas seguro de cerrar sesión?</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    Cerrar sesión?
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
-                    <button class="btn btn-danger"><a class="text-decoration-none text-white" href="{% url 'logout' %}">Cerrar sesión</a></button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Volver
+                  </button>
+                  <button class="btn btn-danger">
+                    <a
+                      class="text-decoration-none text-white"
+                      href="{% url 'logout' %}"
+                      >Confirmar</a
+                    >
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </nav>

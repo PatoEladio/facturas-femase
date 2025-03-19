@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -28,8 +29,8 @@
         class="card"
         style="width: 40rem; padding-inline: 10rem; padding-block: 6rem"
       >
-        <div class="card-body">
-          <h2 class="display-6 mb-4 text-center">Iniciar sesión</h2>
+        <div class="card-body text-center">
+          <img src="{% static 'logo_femase_01.png' %}" class="mb-4" />
           <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
             <div class="d-flex flex-column">
